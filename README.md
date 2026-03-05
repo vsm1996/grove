@@ -1,36 +1,114 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Grove — Project Foundation
 
-## Getting Started
+Career intelligence system built on Harmonia UI.
 
-First, run the development server:
+## Stack
 
+- **Framework**: Next.js 15 App Router
+- **Auth + DB**: Supabase
+- **UI**: Tailwind + DaisyUI
+- **State**: Zustand
+- **Adaptive Layer**: Harmonia `/lib/capacity`
+
+---
+
+## What's Built
+
+### `/src/types/grove.ts`
+Complete TypeScript type system:
+- `Opportunity` — core data model with all fields
+- `ScoredOpportunity` — computed composite score + category
+- `AlignmentScore`, `EnergyScore`, `SignalScore`, `PositioningGap`
+- `InterviewReflection`, `FollowUp`
+- `GroveInsights` — derived analytics
+
+### `/supabase/schema.sql`
+Production-ready schema:
+- `opportunities` table with all scoring dimensions
+- `reflections` table (one-to-many per opportunity)
+- Row Level Security — users only see their own data
+- Auto-updated `updated_at` trigger
+- Indexed for performance
+
+### `/src/store/grove.ts`
+Zustand store with:
+- Live scoring on every mutation (composite score, category)
+- Auto-derived insights (patterns, gaps, averages)
+- Selectors: `getByCategory`, `getByStatus`, `getWarmLeads`
+
+### `/src/lib/grove/db.ts`
+Supabase data layer:
+- Full CRUD for opportunities
+- Reflection creation
+- Auth helpers (signUp, signIn, signOut, getSession)
+- snake_case ↔ camelCase mapping
+
+### `/src/lib/grove/scoring.ts`
+Pure scoring utilities:
+- Label maps for all enum types
+- `categoriesForMode()` — Harmonia mode → which categories to show
+- `cardFieldsForDensity()` — density token → which fields to render
+- Badge colors, score colors, alignment labels
+
+---
+
+## Next Build Order
+
+1. **`/app/layout.tsx`** — Root layout with `CapacityProvider` + auth guard
+2. **`/app/page.tsx`** — Auth page (login/signup)
+3. **`/app/dashboard/page.tsx`** — Capacity-adaptive pipeline view
+4. **`/components/grove/OpportunityCard`** — Adaptive card using `useDerivedMode()`
+5. **`/app/opportunities/new/page.tsx`** — Add opportunity form
+6. **`/app/opportunities/[id]/page.tsx`** — Detail + reflection
+7. **`/app/insights/page.tsx`** — Patterns + gap analysis
+
+---
+
+## Setup Instructions
+
+### 1. Create Next.js app
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npx create-next-app@latest grove --typescript --tailwind --app
+cd grove
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Install dependencies
+```bash
+npm install @supabase/supabase-js zustand daisyui
+npm install -D @types/node
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3. Configure DaisyUI
+In `tailwind.config.ts`:
+```ts
+plugins: [require("daisyui")],
+daisyui: { themes: ["dark"] }
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 4. Copy Harmonia
+```bash
+cp -r ../harmonia-ui/lib/capacity ./src/lib/capacity
+```
 
-## Learn More
+### 5. Environment variables
+Create `.env.local`:
+```
+NEXT_PUBLIC_SUPABASE_URL=your_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+```
 
-To learn more about Next.js, take a look at the following resources:
+### 6. Run Supabase schema
+Paste `supabase/schema.sql` into your Supabase SQL editor and run.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Harmonia Integration Points
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Harmonia Hook | Grove Usage |
+|---|---|
+| `useDerivedMode()` | Every card and dashboard section |
+| `deriveModeLabel()` | `categoriesForMode()` — filter pipeline |
+| `usePredictedCapacity()` | Preload minimal view before user hits low capacity |
+| `useFeedback().fire()` | Haptic on opportunity save, status change |
+| `CapacityProvider` | Root layout wrapper |
+| `CapacityControls` | Fixed panel on dashboard |

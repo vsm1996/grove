@@ -1,0 +1,89 @@
+@import "tailwindcss";
+@plugin "daisyui" {
+  themes: dark --default;
+}
+
+/* ── Harmonia Animation Classes ─────────────────────────────────────────── */
+@layer utilities {
+  .morph-fade-in {
+    animation: morphFadeAnim 1.2s ease-in-out both;
+  }
+  @keyframes morphFadeAnim {
+    0% { opacity: 0; border-radius: 50% 30% 70% 50% / 50% 70% 30% 50%; transform: scale(0.8); }
+    50% { border-radius: 30% 50% 50% 70% / 70% 50% 50% 30%; }
+    100% { opacity: 1; border-radius: 1rem; transform: scale(1); }
+  }
+  .vortex-reveal { animation: vortexAnim 1.2s cubic-bezier(0.4, 0.0, 0.6, 1) both; }
+  @keyframes vortexAnim {
+    0% { transform: scale(0.8) rotate(20deg); opacity: 0; }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  }
+  .helix-rise { animation: helixAnim 1s ease-out both; }
+  @keyframes helixAnim {
+    0% { transform: translateY(50px) rotate(10deg); opacity: 0; }
+    100% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  }
+  .sacred-fade { animation: gentleFadeAnim 0.8s ease-in-out both; }
+  @keyframes gentleFadeAnim {
+    0% { transform: scale(0.95); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .spiral-in { animation: spiralAnim 1s cubic-bezier(0.75, 0.2, 0.5, 1) both; }
+  @keyframes spiralAnim {
+    0% { transform: translate(-30px, 30px) rotate(-12deg); opacity: 0; }
+    100% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+  }
+  .bloom { animation: bloomAnim 1.4s ease-in-out both !important; }
+  @keyframes bloomAnim {
+    0% { transform: scale(0.92); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .breathe { animation: breatheAnim 7.77s ease-in-out infinite !important; }
+  @keyframes breatheAnim {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+  }
+  .float { animation: floatAnim 4.44s ease-in-out infinite !important; }
+  @keyframes floatAnim {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0); }
+  }
+  .pulse { animation: pulseAnim 4.44s infinite ease-in-out; }
+  @keyframes pulseAnim {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.05); opacity: 0.8; }
+  }
+  .hover-lift:hover { animation: hoverLiftAnim 0.55s ease-out forwards; }
+  @keyframes hoverLiftAnim {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-4px); }
+  }
+  .hover-expand:hover { animation: hoverExpandAnim 0.55s ease-in-out forwards; }
+  @keyframes hoverExpandAnim {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.02); }
+  }
+  .attention-beacon { animation: beaconGlow 3s ease-in-out infinite !important; }
+  @keyframes beaconGlow {
+    0%, 100% { box-shadow: 0 0 0 0 oklch(0.65 0.18 45 / 0), 0 0 0 0 oklch(0.65 0.18 45 / 0); }
+    50% { box-shadow: 0 0 16px 2px oklch(0.65 0.18 45 / 0.25), 0 0 32px 4px oklch(0.65 0.18 45 / 0.08); }
+  }
+  .focus-highlight { border-color: oklch(0.65 0.18 45 / 0.5) !important; box-shadow: 0 0 0 1px oklch(0.65 0.18 45 / 0.15); }
+  .attention-text { animation: beaconText 3s ease-in-out infinite !important; }
+  @keyframes beaconText {
+    0%, 100% { text-shadow: 0 0 0 oklch(0.65 0.18 45 / 0); }
+    50% { text-shadow: 0 0 12px oklch(0.65 0.18 45 / 0.35); }
+  }
+  .gentle-beacon { animation: gentleGlow 5s ease-in-out infinite !important; }
+  @keyframes gentleGlow {
+    0%, 100% { box-shadow: 0 0 0 0 oklch(0.65 0.15 220 / 0), 0 0 0 0 oklch(0.65 0.15 220 / 0); }
+    50% { box-shadow: 0 0 10px 1px oklch(0.65 0.15 220 / 0.15), 0 0 20px 2px oklch(0.65 0.15 220 / 0.05); }
+  }
+  .gentle-highlight { border-color: oklch(0.65 0.15 220 / 0.35) !important; }
+  .gentle-text { animation: gentleTextGlow 5s ease-in-out infinite !important; }
+  @keyframes gentleTextGlow {
+    0%, 100% { text-shadow: 0 0 0 oklch(0.65 0.15 220 / 0); }
+    50% { text-shadow: 0 0 8px oklch(0.65 0.15 220 / 0.2); }
+  }
+}
