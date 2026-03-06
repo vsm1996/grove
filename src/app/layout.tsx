@@ -1,52 +1,53 @@
-"use client"
-
-import { useEffect, useState } from "react"
-import { useRouter, usePathname } from "next/navigation"
-import { CapacityProvider } from "@/lib/capacity"
-import { CapacityControls } from "@/components/capacity-controls"
-import { supabase } from "@/lib/grove/db"
-import type { Session } from "@supabase/supabase-js"
+import type { Metadata, Viewport } from "next"
+import ClientLayout from "./client-layout"
 import "./globals.css"
 
-function AuthGuard({ children }: { children: React.ReactNode }) {
-  const [session, setSession] = useState<Session | null>(null)
-  const [loading, setLoading] = useState(true)
-  const router = useRouter()
-  const pathname = usePathname()
+export const metadata: Metadata = {
+  title: {
+    default: "Grove",
+    template: "%s | Grove",
+  },
+  description: "Career intelligence that adapts to your capacity. Score opportunities, track your pipeline, and protect your nervous system through the job search.",
+  applicationName: "Grove",
+  keywords: ["career", "job search", "opportunities", "career intelligence"],
+  authors: [{ name: "Grove" }],
+  creator: "Grove",
+  metadataBase: new URL("https://grove-intel.vercel.app/"),
+  openGraph: {
+    type: "website",
+    siteName: "Grove",
+    title: "Grove — Career Intelligence",
+    description: "Score opportunities. Track your pipeline. Protect your nervous system. A career intelligence system that adapts to how you feel right now.",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "Grove — Career Intelligence",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Grove — Career Intelligence",
+    description: "Score opportunities. Track your pipeline. Protect your nervous system.",
+    images: ["/opengraph-image"],
+  },
+  robots: {
+    index: false,
+    follow: false,
+  },
+  icons: {
+    icon: "/icon",
+    apple: "/apple-icon",
+  },
+}
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session)
-      setLoading(false)
-    })
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        setSession(session)
-        if (!session && pathname !== "/") {
-          router.push("/")
-        }
-      }
-    )
-
-    return () => subscription.unsubscribe()
-  }, [router, pathname])
-
-  useEffect(() => {
-    if (!loading && !session && pathname !== "/") {
-      router.push("/")
-    }
-  }, [loading, session, pathname, router])
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <span className="loading loading-spinner loading-lg" />
-      </div>
-    )
-  }
-
-  return <>{children}</>
+export const viewport: Viewport = {
+  themeColor: "#1d232a",
+  colorScheme: "dark",
+  width: "device-width",
+  initialScale: 1,
 }
 
 export default function RootLayout({
@@ -57,12 +58,9 @@ export default function RootLayout({
   return (
     <html lang="en" data-theme="dark">
       <body>
-        <CapacityProvider>
-          <AuthGuard>
-            {children}
-          </AuthGuard>
-          <CapacityControls />
-        </CapacityProvider>
+        <ClientLayout>
+          {children}
+        </ClientLayout>
       </body>
     </html>
   )
