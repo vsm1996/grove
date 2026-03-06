@@ -15,46 +15,37 @@ export default function OGImage() {
           height: "100%",
           display: "flex",
           flexDirection: "column",
-          alignItems: "flex-start",
-          justifyContent: "flex-end",
-          padding: "80px",
+          justifyContent: "space-between",
+          padding: "72px 80px",
           fontFamily: "system-ui, sans-serif",
+          position: "relative",
         }}
       >
-        {/* Top accent line */}
+        {/* Left accent bar */}
         <div
           style={{
             position: "absolute",
             top: 0,
             left: 0,
-            right: 0,
-            height: "4px",
-            background: "linear-gradient(90deg, #65c3c8, #818cf8)",
+            bottom: 0,
+            width: "6px",
+            background: "linear-gradient(180deg, #65c3c8 0%, #818cf8 100%)",
           }}
         />
 
-        {/* Logo mark */}
-        <div
-          style={{
-            position: "absolute",
-            top: "80px",
-            left: "80px",
-            display: "flex",
-            alignItems: "center",
-            gap: "16px",
-          }}
-        >
+        {/* Top — wordmark */}
+        <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
           <div
             style={{
-              width: "48px",
-              height: "48px",
-              background: "linear-gradient(135deg, #65c3c8, #818cf8)",
-              borderRadius: "12px",
+              width: "44px",
+              height: "44px",
+              background: "#65c3c8",
+              borderRadius: "10px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              fontSize: "24px",
-              fontWeight: "bold",
+              fontSize: "22px",
+              fontWeight: "800",
               color: "#1d232a",
             }}
           >
@@ -62,10 +53,10 @@ export default function OGImage() {
           </div>
           <span
             style={{
-              fontSize: "24px",
-              fontWeight: "600",
-              color: "#a6adba",
-              letterSpacing: "0.05em",
+              fontSize: "22px",
+              fontWeight: "700",
+              color: "#65c3c8",
+              letterSpacing: "0.12em",
               textTransform: "uppercase",
             }}
           >
@@ -73,81 +64,75 @@ export default function OGImage() {
           </span>
         </div>
 
-        {/* Main headline */}
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "20px",
-          }}
-        >
-          <h1
+        {/* Middle — headline */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
+          <div
             style={{
-              fontSize: "72px",
+              fontSize: "68px",
               fontWeight: "800",
               color: "#ffffff",
-              margin: 0,
               lineHeight: 1.05,
               letterSpacing: "-0.02em",
+              display: "flex",
+              flexDirection: "column",
+              gap: "0px",
             }}
           >
-            Career intelligence
-            <br />
-            <span
-              style={{
-                background: "linear-gradient(90deg, #65c3c8, #818cf8)",
-                backgroundClip: "text",
-                color: "transparent",
-              }}
-            >
-              built around you.
-            </span>
-          </h1>
-          <p
+            <span>Career intelligence</span>
+            <span style={{ color: "#65c3c8" }}>built around you.</span>
+          </div>
+          <div
             style={{
-              fontSize: "26px",
-              color: "#6b7280",
-              margin: 0,
-              maxWidth: "680px",
-              lineHeight: 1.4,
+              fontSize: "24px",
+              color: "#a6adba",
+              lineHeight: 1.5,
+              display: "flex",
             }}
           >
-            Score opportunities. Track your pipeline.
-            Protect your nervous system.
-          </p>
+            Score opportunities. Protect your energy. See what your pipeline is telling you.
+          </div>
         </div>
 
-        {/* Bottom right — score pill preview */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: "80px",
-            right: "80px",
-            display: "flex",
-            gap: "12px",
-          }}
-        >
+        {/* Bottom — scoring dimensions */}
+        <div style={{ display: "flex", gap: "16px" }}>
           {[
-            { label: "Alignment", value: "92" },
-            { label: "Energy", value: "High" },
-            { label: "Signal", value: "Warm" },
+            { label: "Alignment", value: "92", color: "#65c3c8" },
+            { label: "Energy", value: "Expansive", color: "#36d399" },
+            { label: "Signal", value: "Warm lead", color: "#818cf8" },
+            { label: "Score", value: "84 / 100", color: "#f59e0b" },
           ].map((item) => (
             <div
               key={item.label}
               style={{
                 background: "#272e35",
                 border: "1px solid #373d45",
-                borderRadius: "10px",
-                padding: "12px 20px",
+                borderRadius: "12px",
+                padding: "16px 22px",
                 display: "flex",
                 flexDirection: "column",
-                gap: "4px",
+                gap: "6px",
+                flex: 1,
               }}
             >
-              <span style={{ fontSize: "12px", color: "#6b7280", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+              <span
+                style={{
+                  fontSize: "11px",
+                  color: "#6b7280",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.1em",
+                  display: "flex",
+                }}
+              >
                 {item.label}
               </span>
-              <span style={{ fontSize: "22px", fontWeight: "700", color: "#ffffff" }}>
+              <span
+                style={{
+                  fontSize: "20px",
+                  fontWeight: "700",
+                  color: item.color,
+                  display: "flex",
+                }}
+              >
                 {item.value}
               </span>
             </div>
