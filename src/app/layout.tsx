@@ -36,9 +36,14 @@ export const metadata: Metadata = {
     description: "Score opportunities. Track your pipeline. Protect your nervous system.",
     images: ["/opengraph-image"],
   },
+  // Named-crawler noindex only — blanket <meta name="robots" noindex> causes
+  // LinkedIn/Bluesky scrapers to refuse rich card previews. robots.txt handles
+  // blocking general crawlers.
   robots: {
-    index: false,
-    follow: false,
+    googleBot: {
+      index: false,
+      follow: false,
+    },
   },
   icons: {
     icon: "/icon",
