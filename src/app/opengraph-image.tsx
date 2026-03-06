@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og"
 
 export const runtime = "edge"
 export const alt = "Grove — Career Intelligence"
-export const size = { width: 1200, height: 630 }
+export const size = { width: 1200, height: 627 }
 export const contentType = "image/png"
 
 export default function OGImage() {

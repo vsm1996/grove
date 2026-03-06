@@ -15,15 +15,18 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://grove-intel.vercel.app/"),
   openGraph: {
     type: "website",
+    url: "https://grove-intel.vercel.app",
     siteName: "Grove",
+    locale: "en_US",
     title: "Grove — Career Intelligence",
     description: "Score opportunities. Track your pipeline. Protect your nervous system. A career intelligence system that adapts to how you feel right now.",
     images: [
       {
         url: "/opengraph-image",
         width: 1200,
-        height: 630,
+        height: 627,
         alt: "Grove — Career Intelligence",
+        type: "image/png",
       },
     ],
   },
