@@ -12,29 +12,25 @@ export const metadata: Metadata = {
   keywords: ["career", "job search", "opportunities", "career intelligence"],
   authors: [{ name: "Grove" }],
   creator: "Grove",
-  metadataBase: new URL("https://grove-intel.vercel.app/"),
+  // VERCEL_URL is set automatically by Vercel; falls back for local dev
+  metadataBase: process.env.VERCEL_URL
+    ? new URL(`https://${process.env.VERCEL_URL}`)
+    : new URL("http://localhost:3000"),
   openGraph: {
     type: "website",
-    url: "https://grove-intel.vercel.app",
     siteName: "Grove",
     locale: "en_US",
     title: "Grove — Career Intelligence",
     description: "Score opportunities. Track your pipeline. Protect your nervous system. A career intelligence system that adapts to how you feel right now.",
-    images: [
-      {
-        url: "/opengraph-image",
-        width: 1200,
-        height: 627,
-        alt: "Grove — Career Intelligence",
-        type: "image/png",
-      },
-    ],
+    // og:image is handled exclusively by opengraph-image.tsx — Next.js auto-generates
+    // the correct absolute URL from the request host. Specifying it here too creates
+    // duplicate og:image tags with a potentially wrong metadataBase URL, causing
+    // LinkedIn to 404 the image and fall back to "web link".
   },
   twitter: {
     card: "summary_large_image",
     title: "Grove — Career Intelligence",
     description: "Score opportunities. Track your pipeline. Protect your nervous system.",
-    images: ["/opengraph-image"],
   },
   // Named-crawler noindex only — blanket <meta name="robots" noindex> causes
   // LinkedIn/Bluesky scrapers to refuse rich card previews. robots.txt handles
