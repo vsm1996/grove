@@ -2,13 +2,17 @@
 
 import { useState } from "react"
 import { useFeedback } from "@/lib/capacity"
-import { addReflection } from "@/lib/grove/db"
+import { addReflection, updateReflection } from "@/lib/grove/db"
 import type { ReflectionSentiment, InterviewReflection } from "@/types/grove"
 
 interface Props {
   opportunityId: string
   onAdded: (r: InterviewReflection) => void
   onCancel: () => void
+  /** When provided, form operates in edit mode */
+  reflectionId?: string
+  initialValues?: Pick<InterviewReflection, "sentiment" | "theyListened" | "meaningfulChallenge" | "respectfulEngagement" | "notes">
+  onUpdated?: (r: InterviewReflection) => void
 }
 
 const SENTIMENTS: { value: ReflectionSentiment; label: string; desc: string }[] = [
@@ -23,13 +27,15 @@ const SENTIMENT_COLORS: Record<ReflectionSentiment, string> = {
   drained: "border-error/60 bg-error/10",
 }
 
-export function ReflectionForm({ opportunityId, onAdded, onCancel }: Props) {
+export function ReflectionForm({ opportunityId, onAdded, onCancel, reflectionId, initialValues, onUpdated }: Props) {
   const { fire } = useFeedback()
-  const [sentiment, setSentiment] = useState<ReflectionSentiment | null>(null)
-  const [theyListened, setTheyListened] = useState(false)
-  const [meaningfulChallenge, setMeaningfulChallenge] = useState(false)
-  const [respectfulEngagement, setRespectfulEngagement] = useState(false)
-  const [notes, setNotes] = useState("")
+  const isEdit = !!reflectionId
+
+  const [sentiment, setSentiment] = useState<ReflectionSentiment | null>(initialValues?.sentiment ?? null)
+  const [theyListened, setTheyListened] = useState(initialValues?.theyListened ?? false)
+  const [meaningfulChallenge, setMeaningfulChallenge] = useState(initialValues?.meaningfulChallenge ?? false)
+  const [respectfulEngagement, setRespectfulEngagement] = useState(initialValues?.respectfulEngagement ?? false)
+  const [notes, setNotes] = useState(initialValues?.notes ?? "")
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -39,15 +45,22 @@ export function ReflectionForm({ opportunityId, onAdded, onCancel }: Props) {
     setIsSubmitting(true)
     setError(null)
     try {
-      const reflection = await addReflection(opportunityId, {
+      const payload = {
         sentiment,
         theyListened,
         meaningfulChallenge,
         respectfulEngagement,
         notes: notes || undefined,
-      })
-      fire("tap")
-      onAdded(reflection)
+      }
+      if (isEdit && reflectionId) {
+        const updated = await updateReflection(reflectionId, payload)
+        fire("tap")
+        onUpdated?.(updated)
+      } else {
+        const reflection = await addReflection(opportunityId, payload)
+        fire("tap")
+        onAdded(reflection)
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to save reflection")
       fire("error")
@@ -110,7 +123,7 @@ export function ReflectionForm({ opportunityId, onAdded, onCancel }: Props) {
 
       <div className="flex gap-2">
         <button type="submit" className="btn btn-primary btn-sm" disabled={!sentiment || isSubmitting}>
-          {isSubmitting ? <span className="loading loading-spinner loading-xs" /> : "Save reflection"}
+          {isSubmitting ? <span className="loading loading-spinner loading-xs" /> : isEdit ? "Save changes" : "Save reflection"}
         </button>
         <button type="button" className="btn btn-ghost btn-sm" onClick={onCancel}>
           Cancel

@@ -62,6 +62,7 @@ export interface PositioningGap {
 // ── Post-Interview Reflection ─────────────────
 
 export interface InterviewReflection {
+  id?: string // DB row id — present after save
   sentiment: ReflectionSentiment
   /** Did the interviewer actively listen? */
   theyListened: boolean

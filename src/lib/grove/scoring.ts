@@ -7,9 +7,25 @@ import type {
   Opportunity,
   ScoredOpportunity,
   OpportunityCategory,
+  OpportunityStatus,
   EnergyType,
   SignalStrength,
 } from "@/types/grove"
+
+// ── Status Maps ───────────────────────────────
+
+export const STATUS_LABELS: Record<OpportunityStatus, string> = {
+  saved: "Saved",
+  applied: "Applied",
+  interviewing: "Interviewing",
+  offer: "Offer",
+  rejected: "Rejected",
+  archived: "Archived",
+}
+
+export const ALL_STATUSES: OpportunityStatus[] = [
+  "saved", "applied", "interviewing", "offer", "rejected", "archived",
+]
 
 // ── Label Maps ────────────────────────────────
 
@@ -139,6 +155,12 @@ export function isWarmLead(opportunity: ScoredOpportunity): boolean {
     opportunity.signal.type === "referral" ||
     opportunity.signal.type === "warm"
   )
+}
+
+// ── Date Formatting ───────────────────────────
+
+export function formatDate(iso: string): string {
+  return new Date(iso).toLocaleDateString()
 }
 
 /**

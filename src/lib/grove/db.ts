@@ -18,6 +18,26 @@ const supabase = createBrowserClient(
 
 export { supabase }
 
+// ── Error Handling ────────────────────────────
+
+function dbError(error: { code?: string; message: string }): Error {
+  switch (error.code) {
+    case "42501":
+      return new Error("Permission denied — your session may have expired. Try signing out and back in.")
+    case "23505":
+      return new Error("This opportunity already exists.")
+    case "23502":
+      return new Error("A required field is missing. Please fill out all required fields.")
+    case "PGRST116":
+      return new Error("Opportunity not found.")
+    case "PGRST301":
+    case "401":
+      return new Error("Your session has expired. Please sign in again.")
+    default:
+      return new Error(error.message || "Something went wrong. Please try again.")
+  }
+}
+
 // ── Type Mapping ──────────────────────────────
 // Supabase returns snake_case; Grove uses camelCase
 
@@ -106,7 +126,7 @@ export async function fetchOpportunities(): Promise<Opportunity[]> {
     .select("*, reflections(*)")
     .order("created_at", { ascending: false })
 
-  if (error) throw new Error(error.message)
+  if (error) throw dbError(error)
   return (data ?? []).map(rowToOpportunity)
 }
 
@@ -117,20 +137,23 @@ export async function fetchOpportunityById(id: string): Promise<Opportunity> {
     .eq("id", id)
     .single()
 
-  if (error) throw new Error(error.message)
+  if (error) throw dbError(error)
   return rowToOpportunity(data)
 }
 
 export async function createOpportunity(
   input: NewOpportunityInput
 ): Promise<Opportunity> {
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error("You must be signed in to save an opportunity.")
+
   const { data, error } = await supabase
     .from("opportunities")
-    .insert(opportunityToRow(input))
+    .insert({ ...opportunityToRow(input), user_id: user.id })
     .select("*, reflections(*)")
     .single()
 
-  if (error) throw new Error(error.message)
+  if (error) throw dbError(error)
   return rowToOpportunity(data)
 }
 
@@ -176,13 +199,13 @@ export async function updateOpportunity(
     .select("*, reflections(*)")
     .single()
 
-  if (error) throw new Error(error.message)
+  if (error) throw dbError(error)
   return rowToOpportunity(data)
 }
 
 export async function deleteOpportunity(id: string): Promise<void> {
   const { error } = await supabase.from("opportunities").delete().eq("id", id)
-  if (error) throw new Error(error.message)
+  if (error) throw dbError(error)
 }
 
 // ── Reflections ───────────────────────────────
@@ -208,9 +231,10 @@ export async function addReflection(
     .select()
     .single()
 
-  if (error) throw new Error(error.message)
+  if (error) throw dbError(error)
 
   return {
+    id: data.id,
     sentiment: data.sentiment,
     theyListened: data.they_listened,
     meaningfulChallenge: data.meaningful_challenge,
@@ -218,6 +242,41 @@ export async function addReflection(
     notes: data.notes,
     reflectedAt: data.reflected_at,
   }
+}
+
+export async function updateReflection(
+  id: string,
+  reflection: Omit<InterviewReflection, "id" | "reflectedAt">
+): Promise<InterviewReflection> {
+  const { data, error } = await supabase
+    .from("reflections")
+    .update({
+      sentiment: reflection.sentiment,
+      they_listened: reflection.theyListened,
+      meaningful_challenge: reflection.meaningfulChallenge,
+      respectful_engagement: reflection.respectfulEngagement,
+      notes: reflection.notes,
+    })
+    .eq("id", id)
+    .select()
+    .single()
+
+  if (error) throw dbError(error)
+
+  return {
+    id: data.id,
+    sentiment: data.sentiment,
+    theyListened: data.they_listened,
+    meaningfulChallenge: data.meaningful_challenge,
+    respectfulEngagement: data.respectful_engagement,
+    notes: data.notes,
+    reflectedAt: data.reflected_at,
+  }
+}
+
+export async function deleteReflection(id: string): Promise<void> {
+  const { error } = await supabase.from("reflections").delete().eq("id", id)
+  if (error) throw dbError(error)
 }
 
 // ── Auth ──────────────────────────────────────

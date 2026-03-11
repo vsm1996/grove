@@ -230,24 +230,9 @@ export function CapacityControls() {
           <div className="card bg-base-200 border border-base-300 shadow-xl w-80 max-h-[85vh] overflow-y-auto">
             {/* Header */}
             <div className="card-body p-4 pb-3 gap-0">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
+              <div className="flex flex-col items-center gap-2">
+                <div className="flex items-center justify-between gap-1 w-full">
                   <span className="font-semibold text-sm">Capacity Controls</span>
-                  <span
-                    className="badge badge-sm text-white"
-                    style={{ backgroundColor: modeBadgeColor }}
-                  >
-                    {modeLabel}
-                  </span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <button
-                    onClick={toggleAutoMode}
-                    className={`btn btn-xs h-7 px-2 ${isAutoMode ? "btn-primary" : "btn-outline"}`}
-                    aria-label={isAutoMode ? "Switch to manual mode" : "Switch to auto mode"}
-                  >
-                    {isAutoMode ? "Auto" : "Manual"}
-                  </button>
                   <button
                     onClick={(e) => {
                       e.stopPropagation()
@@ -257,6 +242,21 @@ export function CapacityControls() {
                     aria-label="Close capacity controls"
                   >
                     ✕
+                  </button>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span
+                    className="badge badge-sm text-white"
+                    style={{ backgroundColor: modeBadgeColor }}
+                  >
+                    {modeLabel}
+                  </span>
+                  <button
+                    onClick={toggleAutoMode}
+                    className={`btn btn-xs h-7 px-2 ${isAutoMode ? "btn-primary" : "btn-outline"}`}
+                    aria-label={isAutoMode ? "Switch to manual mode" : "Switch to auto mode"}
+                  >
+                    {isAutoMode ? "Auto" : "Manual"}
                   </button>
                 </div>
               </div>
@@ -273,7 +273,7 @@ export function CapacityControls() {
               <div className="space-y-2">
                 <label className="text-sm font-medium">Quick Presets</label>
                 <select
-                  className="select select-bordered w-full"
+                  className="select select-bordered w-full mt-2"
                   defaultValue=""
                   onChange={(e) => {
                     const key = e.target.value as PresetKey

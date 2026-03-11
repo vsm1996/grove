@@ -3,37 +3,21 @@
 import Link from "next/link"
 import { useGroveStore } from "@/store/grove"
 import { InsightCard } from "@/components/grove/InsightCard"
-import { ENERGY_LABELS, energyBadgeColor } from "@/lib/grove/scoring"
+import {
+  ENERGY_LABELS,
+  STATUS_LABELS,
+  CATEGORY_COLORS,
+  CATEGORY_LABELS,
+  energyBadgeColor,
+} from "@/lib/grove/scoring"
 import type { OpportunityStatus, OpportunityCategory } from "@/types/grove"
-
-const STATUS_LABELS: Record<OpportunityStatus, string> = {
-  saved: "Saved",
-  applied: "Applied",
-  interviewing: "Interviewing",
-  offer: "Offer",
-  rejected: "Rejected",
-  archived: "Archived",
-}
-
-const CATEGORY_COLORS: Record<OpportunityCategory, string> = {
-  pursue: "badge-success",
-  worth_it: "badge-info",
-  mercenary: "badge-warning",
-  experimental: "badge-neutral",
-}
-
-const CATEGORY_LABELS: Record<OpportunityCategory, string> = {
-  pursue: "Pursue",
-  worth_it: "Worth It",
-  mercenary: "Mercenary",
-  experimental: "Experimental",
-}
 
 export default function InsightsPage() {
   const { insights, opportunities } = useGroveStore()
 
   const total = insights.totalOpportunities
   const expansiveCount = opportunities.filter((o) => o.energy.type === "expansive").length
+  const neutralCount = opportunities.filter((o) => o.energy.type === "neutral").length
   const extractiveCount = opportunities.filter((o) => o.energy.type === "extractive").length
 
   return (
@@ -55,7 +39,7 @@ export default function InsightsPage() {
           <>
             {/* Section 1 — Pipeline Health */}
             <section className="space-y-4">
-              <h2 className="text-sm font-semibold uppercase tracking-wider opacity-70">Pipeline Health</h2>
+              <SectionHeading>Pipeline Health</SectionHeading>
 
               <div className="stats stats-horizontal shadow bg-base-200 w-full overflow-x-auto">
                 <div className="stat">
@@ -75,7 +59,6 @@ export default function InsightsPage() {
                 </div>
               </div>
 
-              {/* Status breakdown */}
               <div className="card bg-base-200 border border-base-300">
                 <div className="card-body p-4 gap-3">
                   <h3 className="text-sm font-medium opacity-70">By status</h3>
@@ -85,11 +68,7 @@ export default function InsightsPage() {
                       .map(([status, count]) => (
                         <div key={status} className="flex items-center gap-2">
                           <span className="w-24 text-sm opacity-70">{STATUS_LABELS[status]}</span>
-                          <progress
-                            className="progress progress-primary flex-1 h-2"
-                            value={count}
-                            max={total}
-                          />
+                          <progress className="progress progress-primary flex-1 h-2" value={count} max={total} />
                           <span className="text-sm tabular-nums opacity-60 w-6 text-right">{count}</span>
                         </div>
                       ))}
@@ -97,14 +76,13 @@ export default function InsightsPage() {
                 </div>
               </div>
 
-              {/* Category breakdown */}
               <div className="card bg-base-200 border border-base-300">
                 <div className="card-body p-4 gap-3">
                   <h3 className="text-sm font-medium opacity-70">By category</h3>
                   <div className="flex flex-wrap gap-2">
                     {(Object.entries(insights.byCategory) as [OpportunityCategory, number][]).map(([cat, count]) => (
                       <div key={cat} className="flex items-center gap-1.5">
-                        <span className={`badge ${CATEGORY_COLORS[cat]}`}>{CATEGORY_LABELS[cat]}</span>
+                        <span className={`badge badge-${CATEGORY_COLORS[cat]}`}>{CATEGORY_LABELS[cat]}</span>
                         <span className="text-sm tabular-nums opacity-60">{count}</span>
                       </div>
                     ))}
@@ -116,7 +94,7 @@ export default function InsightsPage() {
             {/* Section 2 — Patterns */}
             {insights.patterns.length > 0 && (
               <section className="space-y-3">
-                <h2 className="text-sm font-semibold uppercase tracking-wider opacity-70">Patterns</h2>
+                <SectionHeading>Patterns</SectionHeading>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {insights.patterns.map((pattern, i) => (
                     <InsightCard key={i} pattern={pattern} />
@@ -128,12 +106,10 @@ export default function InsightsPage() {
             {/* Section 3 — Positioning Gaps */}
             {insights.topPositioningGaps.length > 0 && (
               <section className="space-y-3">
-                <h2 className="text-sm font-semibold uppercase tracking-wider opacity-70">Positioning Gaps</h2>
+                <SectionHeading>Positioning Gaps</SectionHeading>
                 <div className="card bg-base-200 border border-base-300">
                   <div className="card-body p-4 gap-2">
-                    <p className="text-sm opacity-60">
-                      Recurring gaps across your pipeline:
-                    </p>
+                    <p className="text-sm opacity-60">Recurring gaps across your pipeline:</p>
                     <ul className="space-y-1">
                       {insights.topPositioningGaps.map((gap, i) => (
                         <li key={i} className="flex items-center gap-2 text-sm">
@@ -149,7 +125,7 @@ export default function InsightsPage() {
 
             {/* Section 4 — Energy Analysis */}
             <section className="space-y-3">
-              <h2 className="text-sm font-semibold uppercase tracking-wider opacity-70">Energy Analysis</h2>
+              <SectionHeading>Energy Analysis</SectionHeading>
               <div className="card bg-base-200 border border-base-300">
                 <div className="card-body p-4 gap-3">
                   <div className="flex items-center gap-2">
@@ -160,17 +136,11 @@ export default function InsightsPage() {
                   </div>
                   <div className="flex gap-4 text-sm">
                     <span className="text-success">{expansiveCount} expansive</span>
-                    <span className="opacity-50">{opportunities.filter((o) => o.energy.type === "neutral").length} neutral</span>
+                    <span className="opacity-50">{neutralCount} neutral</span>
                     <span className="text-error">{extractiveCount} extractive</span>
                   </div>
                   {total > 0 && (
-                    <p className="text-sm opacity-60">
-                      {extractiveCount / total >= 0.5
-                        ? "Over half your pipeline is draining. Consider protecting your energy."
-                        : expansiveCount / total >= 0.5
-                          ? "Mostly expansive — your pipeline is energizing. Keep going."
-                          : "A balanced mix. Pay attention to how each interview actually feels."}
-                    </p>
+                    <p className="text-sm opacity-60">{energyRecommendation(extractiveCount, expansiveCount, total)}</p>
                   )}
                 </div>
               </div>
@@ -180,4 +150,16 @@ export default function InsightsPage() {
       </main>
     </div>
   )
+}
+
+// ── Helpers ───────────────────────────────────
+
+function SectionHeading({ children }: { children: React.ReactNode }) {
+  return <h2 className="text-sm font-semibold uppercase tracking-wider opacity-70">{children}</h2>
+}
+
+function energyRecommendation(extractive: number, expansive: number, total: number): string {
+  if (extractive / total >= 0.5) return "Over half your pipeline is draining. Consider protecting your energy."
+  if (expansive / total >= 0.5) return "Mostly expansive — your pipeline is energizing. Keep going."
+  return "A balanced mix. Pay attention to how each interview actually feels."
 }

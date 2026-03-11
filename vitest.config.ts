@@ -12,6 +12,7 @@ export default defineConfig({
       "**/node_modules/**",
       "src/lib/capacity/__tests__/**",
       ".next/**",
+      "e2e/**",
     ],
   },
   resolve: {

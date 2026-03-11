@@ -171,6 +171,7 @@ describe("fetchOpportunityById", () => {
 
 describe("createOpportunity", () => {
   it("inserts a mapped row and returns the created Opportunity", async () => {
+    mockGetUser.mockResolvedValueOnce({ data: { user: { id: "user-1" } } })
     chain.single.mockResolvedValueOnce({ data: mockRow, error: null })
 
     const result = await createOpportunity(newInput)
@@ -199,6 +200,7 @@ describe("createOpportunity", () => {
   })
 
   it("throws on insert error", async () => {
+    mockGetUser.mockResolvedValueOnce({ data: { user: { id: "user-1" } } })
     chain.single.mockResolvedValueOnce({ data: null, error: { message: "Insert failed" } })
     await expect(createOpportunity(newInput)).rejects.toThrow("Insert failed")
   })
