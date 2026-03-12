@@ -269,7 +269,7 @@ export function CapacityControls() {
 
             {/* Content */}
             <div className="card-body p-4 pt-0 gap-6">
-              {/* Capacity Presets - Quick state selection */}
+              {/* Capacity Presets - Quick  state selection */}
               <div className="space-y-2">
                 <label className="text-sm font-medium">Quick Presets</label>
                 <select
