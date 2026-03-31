@@ -3,6 +3,8 @@ import { Analytics } from "@vercel/analytics/next"
 import ClientLayout from "./client-layout"
 import "./globals.css"
 
+const siteUrl = "https://grove-intel.vercel.app";
+
 export const metadata: Metadata = {
   title: {
     default: "Grove",
@@ -11,12 +13,10 @@ export const metadata: Metadata = {
   description: "Career intelligence that adapts to your capacity. Score opportunities, track your pipeline, and protect your nervous system through the job search.",
   applicationName: "Grove",
   keywords: ["career", "job search", "opportunities", "career intelligence"],
-  authors: [{ name: "Grove" }],
+  authors: [{ name: "Vanessa Martin" }],
   creator: "Grove",
   // VERCEL_URL is set automatically by Vercel; falls back for local dev
-  metadataBase: process.env.VERCEL_URL
-    ? new URL(`https://${process.env.VERCEL_URL}`)
-    : new URL("http://localhost:3000"),
+  metadataBase: new URL(siteUrl),
   openGraph: {
     type: "website",
     siteName: "Grove",
@@ -27,6 +27,15 @@ export const metadata: Metadata = {
     // the correct absolute URL from the request host. Specifying it here too creates
     // duplicate og:image tags with a potentially wrong metadataBase URL, causing
     // LinkedIn to 404 the image and fall back to "web link".
+    url: siteUrl,
+    images: [
+      {
+        url: `${siteUrl}/grove.png`,
+        width: 1200,
+        height: 630,
+        alt: "Grove — Career Intelligence",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
